@@ -28,8 +28,10 @@ typedef struct obj_t {
     double x;
     double y;
     double m;
+    double vol;
     int id;
     vec v;
+    vec a;
     vec * app;
     int * appids;
     int capp;
@@ -79,7 +81,7 @@ void print_circle(double x, double y, double r, unsigned int color)
 
 void draw_obj(obj o, unsigned int color)
 {
-    print_circle(o->x, o->y, 0.1, color);
+    print_circle(o->x, o->y, o->vol, color);
 }
 
 void clear()
@@ -145,12 +147,15 @@ int main()
     delay.tv_nsec = 1000000;
     delay.tv_sec = 0;
     vec v0 = init_vec(3, 1);
-    vec v1 = init_vec(2, -3);
+    vec v1 = init_vec(1, -1);
     vec v2 = init_vec(-1,-1);
+    vec a0 = init_vec(0, 0);
+    vec a1 = init_vec(0, 0);
+    vec a2 = init_vec(0,0);
     obj b[10];
-    b[0] = init_obj(150.0, 150.0, 200.0, v0, 0);
-    b[1] = init_obj(310.0, 210.0, 300.0, v1, 1);
-    b[2] = init_obj(150.0, 250.0, 200.0, v2, 2);
+    b[0] = init_obj(150.0, 150.0, 300.0, 0.4,  v0, a0, 0);
+    b[1] = init_obj(310.0, 210.0, 20.0, 0.1,v1, a1, 1);
+    b[2] = init_obj(150.0, 250.0, 20.0, 0.1, v2, a2, 2);
  
     double t = 0.0;
 

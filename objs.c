@@ -15,8 +15,10 @@ typedef struct obj_t {
     double x;
     double y;
     double m;
+    double vol;
     int id;
     vec v;
+    vec a;
     vec * app;
     int * appids;
     int capp;
@@ -27,6 +29,12 @@ void add_vec(vec to_add, vec adder)
     assert(to_add != NULL && adder != NULL);
     to_add -> x += adder->x;
     to_add -> y += adder->y;
+}
+
+void scale_vec(vec w, double c)
+{
+    w->x *= c;
+    w->y *= c;
 }
 
 void add_app(vec v, vec * app, int capp)
@@ -46,14 +54,16 @@ vec init_vec(double x, double y)
     return v;
 }
 
-obj init_obj(double x, double y, double m, vec v, int id)
+obj init_obj(double x, double y, double m, double vol, vec v, vec a, int id)
 {
     obj o = malloc(sizeof(struct obj_t));
 
     o->x = x;
     o->y = y;
     o->m = m;
+    o->vol = vol;
     o->v = v;
+    o->a = a;
 
     o->app = NULL;
     o->appids = NULL;
@@ -91,21 +101,31 @@ double obj_dist(obj o, obj s)
     return sqrt(obj_sqdist(o,s));
 }
 
+void result(obj o, vec res)
+{
+    for (int i = 0; i < o->capp; ++i)
+    {
+        add_vec(res, o->app[i]);
+    }
+    
+    add_vec(res, o->a);
+}
+
 void atract_o(obj o, obj s)
 {
     vec b = init_vec((s->x)-(o->x),(s->y)-(o->y));
     ++(o->capp);
     
-    if(vec_len(b) <= 21)
+   // printf("%lf\n", 100*(o->vol + s->vol));
+
+    if(vec_len(b) <= 100)
     {
-        //TODO: En realidad deberia ser el opuesto del vector resultante
         b->x = 0;
         b->y = 0;
 
         result(s,b);
-        b->x = -b->x;
-        b->y = -b->y;
-
+        add_vec(b,s->a);
+        scale_vec(b,-1/o->m);
     }
     else
     {
@@ -119,16 +139,6 @@ void atract_o(obj o, obj s)
 
     o->app[capp-1] = b;
     o->appids[capp-1] = s->id;
-}
-
-void result(obj o, vec res)
-{
-    for (int i = 0; i < o->capp; ++i)
-    {
-        add_vec(res, o->app[i]);
-    }
-    
-    add_vec(res, o->v);
 }
 
 void apply_forces(obj o, double t)
@@ -145,8 +155,10 @@ void apply_forces(obj o, double t)
 
     o->capp = 0;
 
-    add_vec(res, o->v);
-    apply_vector(o, res, t);
+    add_vec(res, o->a);
+    scale_vec(res, t/o->m);
+    add_vec(o->v, res);
+    apply_vector(o, o->v, t);
 
     free(res);
 }

@@ -8,7 +8,7 @@ void add_vec(vec to_add, vec adder);
 void add_app(vec v, vec * app, int capp);
 vec init_vec(double x, double y);
 double vec_len(vec v);
-obj init_obj(double x, double y, double m, vec v, int id);
+obj init_obj(double x, double y, double m, double vol, vec v, vec a, int id);
 void apply_v(obj o, double t);
 double obj_dist(obj o, obj s);
 void atract_o(obj o, obj s);
