@@ -15,8 +15,10 @@ typedef struct obj_t {
     double x;
     double y;
     double m;
+    int id;
     vec v;
     vec * app;
+    int * appids;
     int capp;
 } Obj;
 
@@ -44,7 +46,7 @@ vec init_vec(double x, double y)
     return v;
 }
 
-obj init_obj(double x, double y, double m, vec v)
+obj init_obj(double x, double y, double m, vec v, int id)
 {
     obj o = malloc(sizeof(struct obj_t));
 
@@ -54,6 +56,7 @@ obj init_obj(double x, double y, double m, vec v)
     o->v = v;
 
     o->app = NULL;
+    o->appids = NULL;
     o->capp = 0;
     
     return o;
@@ -64,10 +67,15 @@ double vec_len(vec v)
     return sqrt((v->x)*(v->x)+(v->y)*(v->y));
 }
 
+void apply_vector(obj o, vec w, double t)
+{
+    o->x += (w->x) * t / o->m;
+    o->y += (w->y) * t / o->m;
+}
+
 void apply_v(obj o, double t)
 {
-    o->x += (o->v->x) * t / o->m;
-    o->y += (o->v->y) * t / o->m;
+    apply_vector(o, o->v, t);
 }
 
 static double obj_sqdist(obj o, obj s)
@@ -85,8 +93,32 @@ double obj_dist(obj o, obj s)
 
 void atract_o(obj o, obj s)
 {
-    vec b = init_vec((o->x)-(s->x),(o->y)-(s->y));
-    o->app = realloc()
+    vec b = init_vec((s->x)-(o->x),(s->y)-(o->y));
+    ++(o->capp);
+    int capp = o->capp;
+    o->app = realloc(o->app, sizeof(vec)*capp);
+    o->appids = realloc(o->appids, sizeof(int) * capp);
+    
+    o->app[capp-1] = b;
+    o->appids[capp-1] = s->id;
+}
 
+void apply_forces(obj o, double t)
+{
+    vec res = init_vec(0,0);
+    
+    for (int i = 0; i < o->capp; ++i)
+    {
+        add_vec(res, o->app[i]);
+        o->appids[i] = -1;
+        free(o->app[i]);
+        o->app[i] = NULL;
+    }
 
+    o->capp = 0;
+
+    add_vec(res, o->v);
+    apply_vector(o, res, t);
+    
+    free(res);
 }

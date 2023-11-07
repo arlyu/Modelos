@@ -28,11 +28,12 @@ typedef struct obj_t {
     double x;
     double y;
     double m;
+    int id;
     vec v;
     vec * app;
+    int * appids;
     int capp;
 } Obj;
-
 
 int car(int x, int y)
 {
@@ -55,7 +56,7 @@ int is_safe(int x, int y)
     return (x < w && x >= 0 && y < h && y >= 0);
 }
 
-void print_circle(double x, double y, double r)
+void print_circle(double x, double y, double r, unsigned int color)
 {
     int x1 = 1;
     int y1 = 1;
@@ -69,16 +70,16 @@ void print_circle(double x, double y, double r)
 
             if(is_safe(x1, y1) && x0*x0+y0*y0<=r*r)
             {
-                pix(x1, y1,0x00ff0000);
+                pix(x1, y1, color);
             }
         }
     }
 
 }
 
-void draw_obj(obj o)
+void draw_obj(obj o, unsigned int color)
 {
-    print_circle(o->x, o->y, 0.1);
+    print_circle(o->x, o->y, 0.1, color);
 }
 
 void clear()
@@ -91,6 +92,11 @@ void clear()
         *real = 0;
         ++real;
     }
+}
+
+void clear_obj(obj o)
+{
+    draw_obj(o, 0x0);
 }
 
 int main()
@@ -139,18 +145,25 @@ int main()
     delay.tv_nsec = 1000000;
     delay.tv_sec = 0;
     vec v = init_vec(0.2, 1);
-    obj o = init_obj(150.0, 150.0, 20.0, v);
+    obj b[10];
+    b[0] = init_obj(150.0, 150.0, 20.0, v, 0);
+    b[1] = init_obj(210.0, 310.0, 220.0, NULL, 1);
+
     double t = 0.0;
 
     clear();
     
     while(t < 100)
     {
-        apply_v(o, 0.01);
-        draw_obj(o);
-        v->x += 0.1;
-        v->y -= 0.01;
-        nanosleep(&delay, NULL);
+        atract_o(b[0], b[1]);
+        apply_forces(b[0], 0.01);
+        draw_obj(b[0], 0x00ff0000); 
+        draw_obj(b[1], 0x0000ff00);
+
+        clear_obj(b[0]);
+        clear_obj(b[1]);
+
+        //nanosleep(&delay, NULL);
         //++t;
     }
     
