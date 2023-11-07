@@ -95,13 +95,22 @@ void atract_o(obj o, obj s)
 {
     vec b = init_vec((s->x)-(o->x),(s->y)-(o->y));
     ++(o->capp);
-    b->x = (o->m * s->m) * b->x/(obj_dist(o,s)*obj_sqdist(o,s));
-    b->y = (o->m * s->m) *  b->y/(obj_dist(o,s)*obj_sqdist(o,s));
-
+    
+    if(vec_len(b) <= 21)
+    {
+        b->x = -s->v->x/o->m;
+        b->y = -s->v->y/o->m;
+    }
+    else
+    {
+        b->x = (o->m * s->m) * b->x/(obj_dist(o,s)*obj_sqdist(o,s));
+        b->y = (o->m * s->m) *  b->y/(obj_dist(o,s)*obj_sqdist(o,s));
+    }
+    
     int capp = o->capp;
     o->app = realloc(o->app, sizeof(vec)*capp);
     o->appids = realloc(o->appids, sizeof(int) * capp);
-    
+
     o->app[capp-1] = b;
     o->appids[capp-1] = s->id;
 }
@@ -109,7 +118,7 @@ void atract_o(obj o, obj s)
 void apply_forces(obj o, double t)
 {
     vec res = init_vec(0,0);
-    
+
     for (int i = 0; i < o->capp; ++i)
     {
         add_vec(res, o->app[i]);
@@ -122,6 +131,6 @@ void apply_forces(obj o, double t)
 
     add_vec(res, o->v);
     apply_vector(o, res, t);
-    
+
     free(res);
 }
