@@ -116,13 +116,14 @@ void atract_o(obj o, obj s)
     vec b = init_vec((s->x)-(o->x),(s->y)-(o->y));
     ++(o->capp);
     
-    if(vec_len(b) <= 21)
+    if(vec_len(b) <= 40)
     {
         b->x = 0;
         b->y = 0;
 
         result(s,b);
-        scale_vec(b,-1/o->m);
+        add_vec(b,s->a);
+        scale_vec(b,-1);
     }
     else
     {
@@ -154,8 +155,9 @@ void apply_forces(obj o, double t)
 
     add_vec(res, o->a);
     scale_vec(res, t/o->m);
+    free(o->a);
+
+    o->a = res;
     add_vec(o->v, res);
     apply_vector(o, o->v, t);
-
-    free(res);
 }
