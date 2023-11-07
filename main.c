@@ -146,10 +146,12 @@ int main()
     delay.tv_sec = 0;
     vec v0 = init_vec(3, 1);
     vec v1 = init_vec(2, -3);
+    vec v2 = init_vec(-1,-1);
     obj b[10];
-    b[0] = init_obj(150.0, 150.0, 1200.0, v0, 0);
+    b[0] = init_obj(150.0, 150.0, 200.0, v0, 0);
     b[1] = init_obj(310.0, 210.0, 300.0, v1, 1);
-
+    b[2] = init_obj(150.0, 250.0, 200.0, v2, 2);
+ 
     double t = 0.0;
 
     clear();
@@ -157,15 +159,22 @@ int main()
     while(t < 100)
     {
         atract_o(b[0], b[1]);
+        atract_o(b[0], b[2]);
         atract_o(b[1], b[0]);
+        atract_o(b[1], b[2]);
+        atract_o(b[2], b[0]);
+        atract_o(b[2], b[1]);
 
         apply_forces(b[0], 0.1);
         apply_forces(b[1], 0.1);
+        apply_forces(b[2], 0.1);
         draw_obj(b[0], 0x00ff0000); 
         draw_obj(b[1], 0x0000ff00);
+        draw_obj(b[2], 0x000000ff);
 
         clear_obj(b[0]);
         clear_obj(b[1]);
+        clear_obj(b[2]);
 
         //nanosleep(&delay, NULL);
         //++t;

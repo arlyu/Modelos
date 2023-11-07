@@ -98,8 +98,14 @@ void atract_o(obj o, obj s)
     
     if(vec_len(b) <= 21)
     {
-        b->x = -s->v->x/o->m;
-        b->y = -s->v->y/o->m;
+        //TODO: En realidad deberia ser el opuesto del vector resultante
+        b->x = 0;
+        b->y = 0;
+
+        result(s,b);
+        b->x = -b->x;
+        b->y = -b->y;
+
     }
     else
     {
@@ -113,6 +119,16 @@ void atract_o(obj o, obj s)
 
     o->app[capp-1] = b;
     o->appids[capp-1] = s->id;
+}
+
+void result(obj o, vec res)
+{
+    for (int i = 0; i < o->capp; ++i)
+    {
+        add_vec(res, o->app[i]);
+    }
+    
+    add_vec(res, o->v);
 }
 
 void apply_forces(obj o, double t)
