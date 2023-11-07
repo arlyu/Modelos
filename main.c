@@ -144,10 +144,11 @@ int main()
     struct timespec delay;
     delay.tv_nsec = 1000000;
     delay.tv_sec = 0;
-    vec v = init_vec(0.2, 1);
+    vec v0 = init_vec(3, 1);
+    vec v1 = init_vec(2, -3);
     obj b[10];
-    b[0] = init_obj(150.0, 150.0, 20.0, v, 0);
-    b[1] = init_obj(210.0, 310.0, 220.0, NULL, 1);
+    b[0] = init_obj(150.0, 150.0, 1200.0, v0, 0);
+    b[1] = init_obj(310.0, 210.0, 300.0, v1, 1);
 
     double t = 0.0;
 
@@ -156,7 +157,10 @@ int main()
     while(t < 100)
     {
         atract_o(b[0], b[1]);
-        apply_forces(b[0], 0.01);
+        atract_o(b[1], b[0]);
+
+        apply_forces(b[0], 0.1);
+        apply_forces(b[1], 0.1);
         draw_obj(b[0], 0x00ff0000); 
         draw_obj(b[1], 0x0000ff00);
 

@@ -95,6 +95,9 @@ void atract_o(obj o, obj s)
 {
     vec b = init_vec((s->x)-(o->x),(s->y)-(o->y));
     ++(o->capp);
+    b->x = (o->m * s->m) * b->x/(obj_dist(o,s)*obj_sqdist(o,s));
+    b->y = (o->m * s->m) *  b->y/(obj_dist(o,s)*obj_sqdist(o,s));
+
     int capp = o->capp;
     o->app = realloc(o->app, sizeof(vec)*capp);
     o->appids = realloc(o->appids, sizeof(int) * capp);
