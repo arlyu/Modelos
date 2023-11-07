@@ -37,6 +37,12 @@ void scale_vec(vec w, double c)
     w->y *= c;
 }
 
+static void add_scaled_vec(vec v0, vec v1, double c)
+{
+    v1->x = v0->x * c;
+    v1->y = v0->y * c;
+}
+
 void add_app(vec v, vec * app, int capp)
 {
     for (int i = 0; i < capp; ++i)
@@ -116,19 +122,21 @@ void atract_o(obj o, obj s)
     vec b = init_vec((s->x)-(o->x),(s->y)-(o->y));
     ++(o->capp);
     
-    if(vec_len(b) <= 40)
+    if(vec_len(b) <= 100*(s->vol+o->vol))
     {
         b->x = 0;
         b->y = 0;
 
         result(s,b);
-        add_vec(b,s->a);
+        //add_vec(b,s->a);
         scale_vec(b,-1);
     }
     else
     {
-        b->x = (o->m * s->m) * b->x/(obj_dist(o,s)*obj_sqdist(o,s));
-        b->y = (o->m * s->m) *  b->y/(obj_dist(o,s)*obj_sqdist(o,s));
+        scale_vec(b,(o->m * s->m)/(obj_dist(o,s)*obj_sqdist(o,s)));
+
+        //b->x = (o->m * s->m) * b->x/(obj_dist(o,s)*obj_sqdist(o,s));
+        //b->y = (o->m * s->m) *  b->y/(obj_dist(o,s)*obj_sqdist(o,s));
     }
     
     int capp = o->capp;
@@ -159,5 +167,4 @@ void apply_forces(obj o, double t)
 
     o->a = res;
     add_vec(o->v, res);
-    apply_vector(o, o->v, t);
 }

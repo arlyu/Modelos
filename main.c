@@ -164,7 +164,7 @@ int main()
     while(t < 100)
     {
         atract_o(b[0], b[1]);
-        atract_o(b[1], b[0]);
+        //atract_o(b[1], b[0]);
         atract_o(b[0], b[2]);
         atract_o(b[1], b[0]);
         atract_o(b[1], b[2]);
@@ -174,6 +174,11 @@ int main()
         apply_forces(b[0], 0.1);
         apply_forces(b[1], 0.1);
         apply_forces(b[2], 0.1);
+        
+        apply_v(b[0], 0.1);
+        apply_v(b[1], 0.1);
+        apply_v(b[2], 0.1);
+        
         draw_obj(b[0], 0x00ff0000); 
         draw_obj(b[1], 0x0000ff00);
         draw_obj(b[2], 0x000000ff);
