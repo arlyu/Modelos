@@ -116,15 +116,12 @@ void atract_o(obj o, obj s)
     vec b = init_vec((s->x)-(o->x),(s->y)-(o->y));
     ++(o->capp);
     
-   // printf("%lf\n", 100*(o->vol + s->vol));
-
-    if(vec_len(b) <= 100)
+    if(vec_len(b) <= 21)
     {
         b->x = 0;
         b->y = 0;
 
         result(s,b);
-        add_vec(b,s->a);
         scale_vec(b,-1/o->m);
     }
     else
